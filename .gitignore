@@ -1,3 +1,10 @@
+# IDEs
+.vscode
+
+# TP IA
+ia-tp2-env
+ml-20m
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
