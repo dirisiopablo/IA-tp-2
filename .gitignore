@@ -4,6 +4,7 @@
 # TP IA
 ia-tp2-env
 ml-20m
+ml-1m
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

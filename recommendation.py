@@ -40,10 +40,10 @@ output_layer = tf.matmul( layer_concat,output_layer_vals['weights'])
 # output_true shall have the original shape for error calculations
 output_true = tf.placeholder('float', [None, 3706])
 # define our cost function
-meansq =    tf.reduce_mean(tf.square(output_layer - output_true))
+error =    tf.reduce_mean(tf.square(output_layer - output_true))
 # define our optimizer
 learn_rate = 0.1   # how fast the model should learn
-optimizer = tf.train.AdagradOptimizer(learn_rate).minimize(meansq)
+optimizer = tf.train.GradientDescentOptimizer(learn_rate).minimize(error)
 
 # initialising variables and starting the session
 init = tf.global_variables_initializer()
@@ -51,7 +51,7 @@ sess = tf.Session()
 sess.run(init)
 # defining batch size, number of epochs and learning rate
 batch_size = 100  # how many images to use together for training
-hm_epochs =200    # how many times to go through the entire dataset
+hm_epochs = 100    # how many times to go through the entire dataset
 tot_images = X_train.shape[0] # total number of images
 
 # running the model for a 200 epochs taking 100 users in batches
@@ -61,9 +61,9 @@ for epoch in range(hm_epochs):
     
     for i in range(int(tot_images/batch_size)):
         epoch_x = X_train[ i*batch_size : (i+1)*batch_size ]
-        _, c = sess.run([optimizer, meansq],
-               feed_dict={input_layer: epoch_x,
-               output_true: epoch_x})
+        _, c = sess.run([optimizer, error],
+                        feed_dict={input_layer: epoch_x,
+                        output_true: epoch_x})
         epoch_loss += c
         
     output_train = sess.run(output_layer,
