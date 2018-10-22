@@ -15,7 +15,7 @@ with tf.Session() as sess:
 	# pick a user
 	X_test = graph.get_tensor_by_name('X_test:0')
 	X_test_np = X_test.eval()
-	sample_user = X_test_np[99,:]
+	sample_user = X_test_np[98,:]
 	#get the predicted ratings
 	print('\nGet predicted ratings for user:')
 	user_pred = sess.run(output_layer, feed_dict={input_layer:[sample_user]})

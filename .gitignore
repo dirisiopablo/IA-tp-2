@@ -6,6 +6,8 @@ ia-tp2-env
 ml-20m
 ml-1m
 
+model
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
