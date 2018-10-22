@@ -12,7 +12,7 @@ from sklearn.metrics import mean_squared_error as MSE
 # reading the ratings data
 ratings = pd.read_csv('dataset/ratings.dat', sep="::", header = None, engine='python')
 # Lets pivot the data to get it at a user level
-ratings_pivot = pd.pivot_table(ratings[[0,1,2]], values=2, index=0, columns=1 ).fillna(0)
+ratings_pivot = pd.pivot_table(ratings[[0,1,2]], values=2, index=0, columns=1 ).fillna(0) / 5 #normalizo para ver si devuelve valores más exactos
 # creating train and test sets
 X_train, X_test = train_test_split(ratings_pivot, train_size=0.8)
 
@@ -38,7 +38,7 @@ layer_1 = tf.nn.sigmoid(tf.matmul(input_layer_concat, hidden_1_layer_vals['weigh
 layer1_const = tf.fill( [tf.shape(layer_1)[0], 1] ,1.0  )
 layer_concat =  tf.concat([layer_1, layer1_const], 1)
 # multiply output of hidden with a weight matrix to get final output
-output_layer = tf.matmul( layer_concat,output_layer_vals['weights'], name='output_layer')
+output_layer = tf.nn.sigmoid(tf.matmul( layer_concat,output_layer_vals['weights']), name='output_layer') # le aplicamos la sigmoidal para que dé valores entre 0 y 1
 # output_true shall have the original shape for error calculations
 output_true = tf.placeholder('float', [None, 3706])
 # define our cost function
@@ -61,6 +61,7 @@ tot_images = X_train.shape[0] # total number of images
 print('\nTraining...')
 for epoch in range(hm_epochs):
     epoch_loss = 0    # initializing error as 0
+    batchs = 0
     
     for i in range(int(tot_images/batch_size)):
         epoch_x = X_train[ i*batch_size : (i+1)*batch_size ]
@@ -68,6 +69,9 @@ for epoch in range(hm_epochs):
                         feed_dict={input_layer: epoch_x,
                         output_true: epoch_x})
         epoch_loss += c
+        batchs =  i + 1
+
+    epoch_loss /= batchs # error promedio por batch por época
         
     output_train = sess.run(output_layer,
                feed_dict={input_layer:X_train})
