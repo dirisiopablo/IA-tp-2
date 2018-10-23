@@ -14,7 +14,7 @@ ratings = pd.read_csv('dataset/ratings.dat', sep="::", header = None, engine='py
 # Lets pivot the data to get it at a user level
 ratings_pivot = pd.pivot_table(ratings[[0,1,2]], values=2, index=0, columns=1 ).fillna(0) / 5 # normalizo para ver si devuelve valores más exactos
 # creating train and test sets
-X_train, X_test = train_test_split(ratings_pivot, train_size=0.8)
+X_train, X_test = train_test_split(ratings_pivot, train_size=0.75)
 
 # Deciding how many nodes wach layer should have
 n_nodes_inpl = 3706  
