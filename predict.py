@@ -4,6 +4,8 @@ import numpy as np
 import random
 import pandas as pd
 
+CONST_USER_INDEX = 150
+
 # Load model
 print('\nLoading model...')
 cwd = os.getcwd()
@@ -47,15 +49,22 @@ with tf.Session() as sess:
 	# pick a user
 	X_test = graph.get_tensor_by_name('X_test:0')
 	X_test_np = X_test.eval()
-	sample_user = X_test_np[150]
-	#get the predicted ratings
+	
+	#get the predicted ratings for sample user ratings
+	sample_user_ratings = X_test_np[CONST_USER_INDEX]
+	sample_user_pred = normalize_recommendation(sess.run(output_layer, feed_dict={input_layer:[sample_user_ratings]}))
+
+	unseen_movie_list = unseen_movies(rating_to_tuple([sample_user_ratings]))
+	recommendations_for_random = random_n_recommendations_for(20, rating_to_tuple(sample_user_pred), unseen_movie_list)
+	print('SORTED RECOMMENDATIONS FOR SAMPLE USER')
+	print(recommendations_for_random)
+	
+	#get the predicted ratings for user random ratings
 	print('\nGet predicted ratings for user:')
-	sample2 = np.random.randint(0, 5, (3706,)) / 5
-	user_pred = normalize_recommendation(sess.run(output_layer, feed_dict={input_layer:[sample_user]}))
-	user_pred2 = normalize_recommendation(sess.run(output_layer, feed_dict={input_layer:[sample2]}))
+	random_user_ratings = np.random.randint(0, 5, (3706,)) / 5
+	random_user_pred = normalize_recommendation(sess.run(output_layer, feed_dict={input_layer:[random_user_ratings]}))
 
-	unseen_movie_list = unseen_movies(rating_to_tuple([sample2]))
-
-	recommendations = random_n_recommendations_for(20, rating_to_tuple(user_pred2), unseen_movie_list)
-	print('SORTED RECOMMENDATIONS')
-	print(recommendations)
+	unseen_movie_list = unseen_movies(rating_to_tuple([random_user_ratings]))
+	recommendations_for_random = random_n_recommendations_for(20, rating_to_tuple(random_user_pred), unseen_movie_list)
+	print('SORTED RECOMMENDATIONS FOR RANDOM USER')
+	print(recommendations_for_random)

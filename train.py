@@ -9,6 +9,9 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
 
+CONST_LEARN_RATE = 0.3
+CONST_EPOCHS = 400
+
 # reading the ratings data
 ratings = pd.read_csv('dataset/ratings.dat', sep="::", header = None, engine='python')
 # Lets pivot the data to get it at a user level
@@ -44,7 +47,7 @@ output_true = tf.placeholder('float', [None, 3706])
 # define our cost function
 error =    tf.reduce_mean(tf.square(output_layer - output_true))
 # define our optimizer
-learn_rate = 0.1   # how fast the model should learn
+learn_rate = CONST_LEARN_RATE  # how fast the model should learn
 optimizer = tf.train.GradientDescentOptimizer(learn_rate).minimize(error)
 
 # initialising variables and starting the session
@@ -53,7 +56,7 @@ sess = tf.Session()
 sess.run(init)
 # defining batch size, number of epochs and learning rate
 batch_size = 100  # how many images to use together for training
-hm_epochs = 200  # how many times to go through the entire dataset
+hm_epochs = CONST_EPOCHS  # how many times to go through the entire dataset
 tot_images = X_train.shape[0] # total number of images
 
 # running the model for a 200 epochs taking 100 users in batches
