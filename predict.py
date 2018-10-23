@@ -19,7 +19,7 @@ with tf.Session() as sess:
 	sample_user = X_test_np[150]
 	#get the predicted ratings
 	print('\nGet predicted ratings for user:')
-	sample2 = np.random.random_sample(3706,)
+	sample2 = np.random.randint(0, 5, (3706,)) / 5
 	user_pred = sess.run(output_layer, feed_dict={input_layer:[sample_user]}) * 5
 	user_pred2 = sess.run(output_layer, feed_dict={input_layer:[sample2]}) * 5
 
