@@ -12,7 +12,7 @@ from sklearn.metrics import mean_squared_error as MSE
 # reading the ratings data
 ratings = pd.read_csv('dataset/ratings.dat', sep="::", header = None, engine='python')
 # Lets pivot the data to get it at a user level
-ratings_pivot = pd.pivot_table(ratings[[0,1,2]], values=2, index=0, columns=1 ).fillna(0) / 5 #normalizo para ver si devuelve valores más exactos
+ratings_pivot = pd.pivot_table(ratings[[0,1,2]], values=2, index=0, columns=1 ).fillna(0) / 5 # normalizo para ver si devuelve valores más exactos
 # creating train and test sets
 X_train, X_test = train_test_split(ratings_pivot, train_size=0.8)
 
