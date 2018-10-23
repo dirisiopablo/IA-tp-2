@@ -2,11 +2,13 @@ import os
 import tensorflow as tf
 import numpy as np
 import random
+import pandas as pd
 
 # Load model
 print('\nLoading model...')
 cwd = os.getcwd()
 path = os.path.join(cwd, 'model')
+movies = pd.read_csv('dataset/movies.dat', sep="::", header = None, engine='python')[1]
 
 def rating_to_tuple(ratings):
 	return [(i,x) for i,x in enumerate(np.round(ratings)[0])]
@@ -25,17 +27,15 @@ def sort_rated_movie_tuples(rated_movies_tuples):
 def filter_movies_rating_greater_equal(tuple_array, threshold):
 	return [t for t in tuple_array if t[1] >= threshold]
 
+def set_movies_description(tuple_array):
+	return list(map(lambda a: (movies[a[0]], a[1]), tuple_array))
+
 def random_n_recommendations_for(n, recommendations, unseen_movies):
 	unseen_movies_ids = [i for (i, x) in unseen_movies]
 	unseen_recommendation_tuples = [i for i in recommendations if i[0] in unseen_movies_ids]
-	print('UNSEEN RECOMMENDATIONS COUNT')
-	print(len(unseen_recommendation_tuples))
-	print('UNSEEN COUNT')
-	print(len(unseen_movie_list))
 
 	filtered_list = filter_movies_rating_greater_equal(unseen_recommendation_tuples, 3)
-	print(filtered_list)
-	return sort_rated_movie_tuples(random.sample(filtered_list, n))
+	return set_movies_description(sort_rated_movie_tuples(random.sample(filtered_list, n)))
 
 with tf.Session() as sess:
 	saver = tf.train.import_meta_graph(path + '/model-1000.meta')
@@ -59,17 +59,3 @@ with tf.Session() as sess:
 	recommendations = random_n_recommendations_for(20, rating_to_tuple(user_pred2), unseen_movie_list)
 	print('SORTED RECOMMENDATIONS')
 	print(recommendations)
-
-
-	# print(np.max(user_pred))
-	# print(np.mean(user_pred))
-	# print(np.sort((np.round(-user_pred))))
-	# print('pred 2: ')
-	# print(np.max(user_pred2))
-	# print(np.mean(user_pred2))
-	# print(np.sort((np.round(-user_pred2))))
-	# print(rating_to_tuple(user_pred2))
-	# tuple_array = np.array(rating_to_tuple(user_pred2), dtype=[('index', int), ('rating', float)])
-	# tuple_array.sort(order='rating')
-	# print(tuple_array[::-1])
-	
